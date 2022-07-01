@@ -1,0 +1,7 @@
+{% for prbloem in problems %}
+<a href="/problem/{{prbloem.id}}">
+    <h4 style="text-transform:capitalize;">
+        {{ forloop.counter }}. {{prbloem.problem_name}}
+    </h4>
+ </a>
+{% endfor %}

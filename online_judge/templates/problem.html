@@ -1,0 +1,19 @@
+<h3 style="text-transform:capitalize;">
+    {{ problem.problem_name }}
+</h3>
+<p>
+    {{ problem.problem_desc }}
+</p>
+<form action="/submit/{{problem.id}}/" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="language">language:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+    <select name="language" id="language" required="required">
+        
+        <option value="">choose language</option>
+        <option value="cpp">c++</option>
+        <option value="java">java</option>
+    </select><br><br>
+    <label for="language">Code_file:&Tab;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+    <input type="file" name="codefile" required><br><br>
+    <input type="submit" name="submit" value="submit">
+</form>

@@ -10,10 +10,13 @@
     <select name="language" id="language" required="required">
         
         <option value="">choose language</option>
-        <option value="cpp">c++</option>
+        <option value="c++">C++</option>
         <option value="java">java</option>
     </select><br><br>
+    <label for="textaera">Write your code here:</label><br>
+    <textarea name="codeEditor" id="textaera" cols="100" rows="30"></textarea><br><br>
     <label for="language">Code_file:&Tab;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-    <input type="file" name="codefile" required><br><br>
-    <input type="submit" name="submit" value="submit">
+    <input type="file" name="codefile"><br><br>
+    <h4>{{msg}}</h4>
+    <input type="submit" name="submit" value="Submit">
 </form>

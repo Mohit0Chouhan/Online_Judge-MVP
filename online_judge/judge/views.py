@@ -1,12 +1,10 @@
-import cProfile
-import imp
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 import os
+import subprocess
 import filecmp
-from .forms import Submission_form
-from judge.models import Problem, Solution
-from django.core.files.storage import default_storage
+from judge.models import Problem, Solution, Test
+from judge.helper import save_submission
 
 # Create your views here.
 def index(request):
@@ -24,7 +22,8 @@ def problems(request):
 def problem(request , problem_id):
     problem = Problem.objects.get(pk = problem_id)
     context = {
-        'problem':problem
+        'problem':problem,
+        'msg':''
     }
     return render(request, 'problem.html', context)
         
@@ -32,38 +31,47 @@ def problem(request , problem_id):
 
 def submit(request , pid):
     problem = Problem.objects.get(pk=pid)
+    test = Test.objects.get(problem__problem_name=problem.problem_name)
     if request.method == 'POST':
-        file = request.FILES['codefile']
-        sol = Solution(
-            problem=problem,
-            language=request.POST['language'],
-            code_file=file,
-            verdict='PS'
-        )
-        sol.save()
+        # file = request.FILES['codefile']
+        # sol = Solution(
+        #     problem=problem,
+        #     language=request.POST['language'],
+        #     code_file=file,
+        #     verdict='PS'
+        # )
+        # sol.save()
+        sol =save_submission(request , problem)
+        if not sol :
+            problem = Problem.objects.get(pk = pid)
+            context = {
+                'problem':problem,
+                'msg':'Please select a file!!!'
+            }
+            return render(request, 'problem.html', context)
+
+        sol_id = sol.id
 
         name = sol.code_file.url
-        # name = s_file[0]
-        # extn = s_file[1]
         s_file = 'media/' + name
         outfile = 'm.exe'
+        inputfile = 'media/' + test.test_input.url
+        testout = 'media/' + test.test_output.url
 
-        inputfile = 'media/test_inputs/count_anagrms.txt'
-        os.system('g++ ' + s_file + ' -o ' + outfile)
-        os.system('echo Evaluating your code..... ')
-        os.system(outfile + ' < ' + inputfile + ' > media/out_file/p_output.txt')
-        # with open('p_output.txt' , 'r') as src:
-        #     with open('media/test_outputs/count.txt' , 'r') as dest:
-        #         src_cont = src.read()
-        #         dest_cont = dest.read()
-        result = filecmp.cmp('media/out_file/p_output.txt', 'media/test_outputs/count.txt', shallow=False)
+        subprocess.call(["g++",s_file,"-o",outfile],shell=True)
+        k = subprocess.call(["output.exe"],stdin=inputfile ,stdout='media/out_file/p_output.txt',shell=True)
+        # os.system('g++ ' + s_file + ' -o ' + outfile)
+        # os.system('echo Evaluating your code..... ')
+        # os.system(outfile + ' < ' + inputfile + ' > media/out_file/p_output.txt')
+        result = filecmp.cmp('media/out_file/p_output.txt', testout, shallow=False)
         # os.system('del media\out_file\p_output.txt')
-        os.system('del m.exe')
+        # os.system('del m.exe')
+        subprocess.call(['del','m.exe'])
         if result:
-            sol.verdict = 'AC'
+            Solution.objects.filter(id=sol_id).update(verdict='AC')
             return HttpResponse("Hurray!! You are doing great today. Keep it Up")
         else:
-            sol.verdict = 'WA'
+            Solution.objects.filter(id=sol_id).update(verdict='WA')
             return HttpResponse("Failure is not an end of the world")
         
     else:

@@ -1,30 +1,20 @@
-from distutils.command.upload import upload
 from django import forms
-
-from judge.models import Solution
-
-class UploadFileForm(forms.Form):
-    title = forms.CharField(max_length=50)
-    file = forms.FileField()
-
-class Submission_form(forms.Form):
-    Language_choices = [
-        ('c++' , 'cpp'),
-    ]
-    language = forms.Select(choices=Language_choices)
-    c_file = forms.FileField()
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 
-# class SubmitSolution(forms.Form):
-#     Language_choices = (
-#         ('c++' , 'cpp'),
-#     )
-#     Verdict_choices = (
-#         ('WA' , 'Wrong Answer'),
-#         ('AC' , 'All Correct'),
-#         ('TLE' , 'Time Limit Exeeded'),
-#         ('MLE' , 'Memory Limit Exeeded'),
-#     )
-#     language = forms.CharField(choices=Language_choices)
-#     code_file = forms.FileField()
-#     verdict = forms.CharField(choices=Verdict_choices)
+# Create your forms here.
+
+class NewUserForm(UserCreationForm):
+	email = forms.EmailField(required=True)
+
+	class Meta:
+		model = User
+		fields = ("username", "email", "password1", "password2")
+
+	def save(self, commit=True):
+		user = super(NewUserForm, self).save(commit=False)
+		user.email = self.cleaned_data['email']
+		if commit:
+			user.save()
+		return user

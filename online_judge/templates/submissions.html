@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Submissions | OJ{% endblock title %}
+
+{% block body %}
+<div class="container">
+  <table class="table mt-3">
+    <thead class="">
+      <tr class="bg-secondary">
+        <th scope="col">PROBLEM NAME</th>
+        <th scope="col">VERDICT</th>
+        <th scope="col">LANGUAGE</th>
+        <th scope="col">TIME</th>
+      </tr>
+    </thead>
+    <tbody>
+     
+
+  {% for submission in submissions %}
+  {% if submission.verdict == "AC" %}
+  <tr style="background-color: rgba(82, 185, 71, 0.701);">
+    <th scope="row" class="text-capitalize">{{submission.problem}}</th>
+    <td class="text-capitalize">{{submission.verdict}}</td>
+    <td class="text-capitalize">{{submission.language}}</td>
+    <td class="text-capitalize">{{submission.timestamp}}</td>
+  </tr>
+  {% elif submission.verdict == "WA"%}
+  <tr style="background-color: rgba(204, 44, 44, 0.594);">
+    <th scope="row" class="text-capitalize">{{submission.problem}}</th>
+    <td class="text-capitalize">{{submission.verdict}}</td>
+    <td class="text-capitalize">{{submission.language}}</td>
+    <td class="text-capitalize">{{submission.timestamp}}</td>
+  </tr>
+  {% endif %}
+  
+  {% endfor %}
+</tbody>
+</table>
+</div>
+{% endblock body %}

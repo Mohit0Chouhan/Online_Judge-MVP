@@ -1,7 +1,62 @@
-{% for prbloem in problems %}
-<a href="/problem/{{prbloem.id}}">
-    <h4 style="text-transform:capitalize;">
-        {{ forloop.counter }}. {{prbloem.problem_name}}
-    </h4>
- </a>
-{% endfor %}
+{% extends 'base.html' %}
+
+{% block title %}
+Problems | OJ
+{% endblock title %}
+
+{% block body %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'judge:index' %}">
+      <img src="https://img.icons8.com/nolan/48/ios-photos.png">
+      Online Judge
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'judge:index' %}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'judge:problems' %}">Problems</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link">About Us</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container p-4">
+  <h1 class="text-center">Problems</h1>
+  <ol class="list-group list-group-numbered">
+    {% if problems %}
+    {% for problem in problems %}
+    <a href="{% url 'judge:problem' problem.id %}"
+      class="list-group-item list-group-item-action fw-bolder text-capitalize p-3">
+      {{forloop.counter}}. {{problem.problem_name}}
+
+      {% if problem.problem_difficulty == 'easy' %}
+      <span class="badge badge-pill badge-success">Easy</span>
+      {% endif %}
+      {% if problem.problem_difficulty == 'medium' %}
+      <span class="badge badge-pill badge-warning">Medium</span>
+      {% endif %}
+      {% if problem.problem_difficulty == 'difficult' %}
+      <span class="badge badge-pill badge-danger">Difficult</span>
+      {% endif %}
+    </a>
+    {% endfor %}
+    {% else %}
+    <div class="alert alert-danger" role="alert">
+      Sorry , there are no Problems available.
+    </div>
+    {% endif %}
+  </ol>
+</div>
+
+
+{% endblock body %}

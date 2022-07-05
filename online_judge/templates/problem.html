@@ -1,22 +1,90 @@
-<h3 style="text-transform:capitalize;">
-    {{ problem.problem_name }}
-</h3>
-<p>
-    {{ problem.problem_desc }}
-</p>
-<form action="/submit/{{problem.id}}/" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <label for="language">language:&nbsp;&nbsp;&nbsp;&nbsp;</label>
-    <select name="language" id="language" required="required">
-        
-        <option value="">choose language</option>
-        <option value="c++">C++</option>
-        <option value="java">java</option>
-    </select><br><br>
-    <label for="textaera">Write your code here:</label><br>
-    <textarea name="codeEditor" id="textaera" cols="100" rows="30"></textarea><br><br>
-    <label for="language">Code_file:&Tab;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-    <input type="file" name="codefile"><br><br>
-    <h4>{{msg}}</h4>
-    <input type="submit" name="submit" value="Submit">
-</form>
+{% extends 'base.html' %}
+
+{% block title %}
+{{problem.problem_name | capfirst}}- Submit | OJ
+{% endblock title %}
+{% block css %}
+<style>
+    legend {
+        max-width: 170px;
+    }
+
+    ::selection {
+        color: rgb(255, 255, 255);
+        background: rgb(58, 150, 255);
+    }
+</style>
+{% endblock css %}
+
+{% block body %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'judge:index' %}">
+            <img src="https://img.icons8.com/nolan/48/ios-photos.png">
+            Online Judge
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'judge:index' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'judge:problems' %}">Problems</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">About Us</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid mt-3">
+    <div class="container-fluid row">
+        <div class="container col-6">
+            <h3 class="text-center text-capitalize">
+                {{ problem.problem_name }}
+            </h3>
+            <p>
+                {{problem.problem_desc}}
+            </p>
+        </div>
+        <div class="container col ">
+            <form action="{% url 'judge:submit' problem.id %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <fieldset class="border rounded-lg border-dark p-2">
+                    <legend class="border rounded-pill border-dark mx-2 px-3 bg-info text-light">Submission</legend>
+                    <div class="form-group">
+                        <label for="language" class="form-label">Language:</label>
+                        <select name="language" class="form-control form-select" id="language" required="required">
+                            <option value="">Choose language</option>
+                            <option value="c++">C++</option>
+                            <option value="java">java</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                    <label for="textaera" class="form-label">Write your code here:</label>
+                    <textarea name="codeEditor" class="form-control bg-dark text-light" id="textaera"
+                        data-toggle="tooltip" data-placement="top" title="Write your code" rows="14"></textarea>
+                    </div>
+                    <div class="form-group">
+                    <label for="language" class="form-label mt-1">Code file:</label>
+                    <input type="file" class="form-control-file" name="codeFile">
+                    </div>
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-danger" role="alert">
+                        {{message}}
+                      </div>
+                      {% endfor %}
+                    {% endif %}
+                    <input type="submit" class="btn btn-primary mt-1" name="submit" value="Submit">
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock body %}

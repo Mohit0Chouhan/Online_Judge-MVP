@@ -33,9 +33,8 @@ class Solution(models.Model):
         ('PS' , 'Processing'),
         ('WA' , 'Wrong Answer'),
         ('AC' , 'All Correct'),
-        ('TLE' , 'Time Limit Exeeded'),
-        ('MLE' , 'Memory Limit Exeeded'),
     )
+    user = models.ForeignKey(User ,on_delete=models.CASCADE)
     problem = models.ForeignKey(Problem , on_delete=models.CASCADE)
     language = models.CharField(max_length=10 , choices=Language_choices)
     code_file = models.FileField(upload_to='code_file/' , null=False)

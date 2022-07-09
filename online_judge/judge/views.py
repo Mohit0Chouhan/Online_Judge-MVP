@@ -1,29 +1,36 @@
-from .forms import NewUserForm
-from django.contrib.auth import login
-from django.contrib import messages
-from distutils.command.upload import upload
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render ,redirect
+from django.contrib.auth import authenticate , login , logout
+from django.shortcuts import get_object_or_404, render
+from judge.models import Problem, Solution, Test
+from django.contrib.auth.models import User
+from django.contrib import messages
+from django.core.files import File
 import subprocess
 import filecmp
-from judge.models import Problem, Solution, Test
-from judge.helper import save_submission
-from django.core.files import File
 
 # Create your views here.
 def index(request):
     return render(request , 'index.html')
 
 def problems(request):
-    problems = Problem.objects.all()
-    return render(request , 'problems.html' , { 'problems' : problems})
+    if request.user.is_authenticated :
+        problems = Problem.objects.all()
+        return render(request , 'problems.html' , { 'problems' : problems})
+    else:
+        messages.success(request , "Please login to solve problems!!", extra_tags='alert alert-info')
+        return HttpResponseRedirect('/judge/login')
 
 def problem(request , problem_id):
-    problem = get_object_or_404(Problem , pk=problem_id)
-    context = {
-        'problem':problem
-    }
-    return render(request, 'problem.html', context)
+    if request.user.is_authenticated :
+        problem = get_object_or_404(Problem , pk=problem_id)
+        context = {
+            'problem':problem
+        }
+        return render(request, 'problem.html', context)
+    else:
+        messages.success(request , "Please login to solve problems!!", extra_tags='alert alert-info')
+        return HttpResponseRedirect('/judge/login')
+    
         
     
 
@@ -84,9 +91,6 @@ def submit(request , pid):
             k = subprocess.call(['temp.exe'],stdin=test.test_input ,stdout=out_container,shell=True)
             out_container.close()
             if k:
-                # mo = open(inputfile , 'r')
-                # errorContent = mo.read()
-                # mo.close()
                 return HttpResponse(k.stdout)
             else:
                 result = filecmp.cmp('mohit.txt', testout, shallow=False)
@@ -94,6 +98,7 @@ def submit(request , pid):
                     file =  open('temp.cpp')
                     myfile = File(file)
                     sol = Solution(
+                        user = request.user,
                         problem=problem,
                         language=request.POST['language'],
                         code_file=myfile,
@@ -106,6 +111,7 @@ def submit(request , pid):
                     file =  open('temp.cpp')
                     myfile = File(file)
                     sol = Solution(
+                        user = request.user,
                         problem=problem,
                         language=request.POST['language'],
                         code_file=myfile,
@@ -137,6 +143,7 @@ def submit(request , pid):
                     file =  open('temp.cpp')
                     myfile = File(file)
                     sol = Solution(
+                        user = request.user,
                         problem=problem,
                         language=request.POST['language'],
                         code_file=myfile,
@@ -149,6 +156,7 @@ def submit(request , pid):
                     file =  open('temp.cpp')
                     myfile = File(file)
                     sol = Solution(
+                        user = request.user,
                         problem=problem,
                         language=request.POST['language'],
                         code_file=myfile,
@@ -178,13 +186,47 @@ def submissions(request):
 
 
 def register_request(request):
-	if request.method == "POST":
-		form = NewUserForm(request.POST)
-		if form.is_valid():
-			user = form.save()
-			login(request, user)
-			messages.success(request, "Registration successful." )
-			return redirect("main:homepage")
-		messages.error(request, "Unsuccessful registration. Invalid information.")
-	form = NewUserForm()
-	return render (request,"register.html", context={"register_form":form})
+    return render(request , 'register.html')
+
+
+def register_verify(request):
+    if request.method == 'POST':
+        if request.POST['password1'] == request.POST['password2']:
+            username = request.POST['username']
+            firstname = request.POST['firstname']
+            password = request.POST['password1']
+            email = request.POST['email']
+
+            new_user = User.objects.create_user(username , email, password)
+            new_user.first_name = firstname
+            new_user.save()
+            messages.success(request , "Registration Successful", extra_tags='alert alert-success')
+            return HttpResponseRedirect('/judge/register/')
+        else:
+            messages.succes(request , "Both passsword should be same.", extra_tags='alert alert-danger')
+            return HttpResponseRedirect('/judge/register/')
+    else:
+        return HttpResponse("Usage: Post method is not used.")
+        
+def login_request(request):
+    return render(request , 'login.html')
+
+def login_check(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request , "Logged in successfully.", extra_tags='alert alert-success')
+            return HttpResponseRedirect('/judge')
+        else:
+            messages.success(request , "Log in failed!! check username or password.", extra_tags='alert alert-danger')
+            return HttpResponseRedirect('/judge/login/')
+    else:
+        return HttpResponse("Usage: Method used is not POST.")
+
+def log_out(request):
+    logout(request)
+    messages.success(request , "Logout succesfully.", extra_tags='alert alert-success')
+    return HttpResponseRedirect('/judge')

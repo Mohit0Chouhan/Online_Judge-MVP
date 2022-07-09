@@ -1,80 +1,80 @@
 {% extends 'base.html' %}
 {% block title %}
-    Home | OJ
+Home | OJ
 {% endblock title %}
 {% block body %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'judge:index' %}">
-            <img src="https://img.icons8.com/nolan/48/ios-photos.png">
-            Online Judge
-          </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{% url 'judge:index' %}">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'judge:problems' %}">Problems</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link">About Us</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-  <div class="container">
-  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 mt-3">
-    <div class="col mb-4">
-      <div class="card">
-        <img src="https://img.freepik.com/free-photo/futuristic-smart-city-with-5g-global-network-technology_53876-98438.jpg?size=626&ext=jpg&ga=GA1.2.1865860322.1656910696  " class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-        </div>
-      </div>
-    </div>
-    <div class="col mb-4">
-      <div class="card">
-        <img src="https://img.freepik.com/free-photo/digital-circle-circuit-blue-background-futuristic-technology_53876-124643.jpg?size=626&ext=jpg&ga=GA1.2.1865860322.1656910696" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-        </div>
-      </div>
-    </div>
-    <div class="col mb-4">
-      <div class="card">
-        <img src="https://img.freepik.com/free-photo/3d-render-network-communications-design-background-with-shallow-depth-field_1048-14612.jpg?size=626&ext=jpg&ga=GA1.2.1865860322.1656910696" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content.</p>
-        </div>
-      </div>
-    </div>
-    <div class="col mb-4">
-      <div class="card">
-        <img src="https://img.freepik.com/free-photo/cool-geometric-triangular-figure-neon-laser-light-great-backgrounds-wallpapers_181624-9331.jpg?size=626&ext=jpg" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-        </div>
-      </div>
-    </div>
-    <div class="col mb-4">
-      <div class="card">
-        <img src="https://img.freepik.com/free-photo/medium-shot-man-wearing-vr-glasses_23-2149126949.jpg?size=626&ext=jpg&ga=GA1.2.1865860322.1656910696" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-        </div>
-      </div>
-    </div>
+{% include 'navbar.html' %}
+{% if messages %}
+{% for message in messages %}
+<div{% if message.tags %} class="{{ message.tags }} alert-dismissible fade show text-center" role="alert" {% endif %}>
+  {{ message }}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
+  {% endfor %}
+  {% endif %}
+  <div class="container">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 mt-3">
+      <div class="col mb-4">
+        <div class="card">
+          <img
+            src="https://img.freepik.com/free-photo/futuristic-smart-city-with-5g-global-network-technology_53876-98438.jpg?size=626&ext=jpg&ga=GA1.2.1865860322.1656910696  "
+            class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional
+              content. This content is a little bit longer.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col mb-4">
+        <div class="card">
+          <img
+            src="https://img.freepik.com/free-photo/digital-circle-circuit-blue-background-futuristic-technology_53876-124643.jpg?size=626&ext=jpg&ga=GA1.2.1865860322.1656910696"
+            class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional
+              content. This content is a little bit longer.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col mb-4">
+        <div class="card">
+          <img
+            src="https://img.freepik.com/free-photo/3d-render-network-communications-design-background-with-shallow-depth-field_1048-14612.jpg?size=626&ext=jpg&ga=GA1.2.1865860322.1656910696"
+            class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional
+              content.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col mb-4">
+        <div class="card">
+          <img
+            src="https://img.freepik.com/free-photo/cool-geometric-triangular-figure-neon-laser-light-great-backgrounds-wallpapers_181624-9331.jpg?size=626&ext=jpg"
+            class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional
+              content. This content is a little bit longer.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col mb-4">
+        <div class="card">
+          <img
+            src="https://img.freepik.com/free-photo/medium-shot-man-wearing-vr-glasses_23-2149126949.jpg?size=626&ext=jpg&ga=GA1.2.1865860322.1656910696"
+            class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional
+              content. This content is a little bit longer.</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   {% include 'footer.html' %}
-{% endblock body %}
+  {% endblock body %}

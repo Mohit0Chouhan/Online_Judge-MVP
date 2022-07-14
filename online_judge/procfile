@@ -1,0 +1,1 @@
+web gunicorn online_judge.wsgi:application --log-file -
